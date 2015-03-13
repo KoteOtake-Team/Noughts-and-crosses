@@ -1,1 +1,1 @@
-# Noughts-and-crosses
+# Crosses-and-zeros
