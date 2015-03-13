@@ -1,1 +1,1 @@
-# Noughts-and-crosses
+# Крестики-нолики
