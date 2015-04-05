@@ -13,22 +13,24 @@ import random
     [o] - "нолик"
     [x] - "крестик"
 '''
+# Фигуры
 empty = ' '
 nought = 'o'
 cross = 'x'
-ch = ''  # выбор, за какую фигуру играть
-c_ch = ''
+
+ch = ''  # фигура игрока
+c_ch = ''  # фигура компьютера
 # правила для определения выигрыша
 rules = ((0, 1, 2), (3, 4, 5), (6, 7, 8),  # по горизонтали
          (0, 3, 6), (1, 4, 7), (2, 5, 8),  # по вертикали
          (0, 4, 8), (2, 4, 6))  # по диагонали
-field = []  # создание пустого поля
+field = []  # поле игры
 
 
 # ВЫВОД ПОЛЯ НА ЭКРАН
 def show():
-    for i in range(3):
-        print((field[i*3:i*3+3]))
+    print('[{0}][{1}][{2}]\n[{3}][{4}][{5}]\n[{6}][{7}][{8}]'
+          .format(field[0], field[1], field[2], field[3], field[4], field[5], field[6], field[7], field[8]))
 # ВЫБОР ФИГУРЫ
 def choice_fig():
     global ch, c_ch
@@ -45,14 +47,10 @@ def choice_fig():
 # ПРОВЕРКА ВЫИГРЫША
 def check():
     if len(list(filter(lambda x: x == empty, field))) == 0:  # если нет больше пустых клеток
-        print(len(list(filter(lambda x: x == empty, field))))
         return False
     for i in range(len(rules)):
-        if field[rules[i][0]] == field[rules[i][1]] == field[rules[i][2]]:
-            if field[rules[i][0]] == ch:
-                return True
-            elif field[rules[i][0]] == c_ch:
-                return True
+        if field[rules[i][0]] == field[rules[i][1]] == field[rules[i][2]] in (ch, c_ch):  # TODO: возможна неопределённость
+            return True
 # ХОД ПОЛЬЗОВАТЕЛЯ
 def user_move():
     cell = input('Ваш ход: ')
