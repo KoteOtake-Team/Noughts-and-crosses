@@ -89,7 +89,7 @@ def main():
         user_move()
         show()
         if check() is True:
-            print('Вы победиили')
+            print('Вы победили')
             break
         elif check() is False:
             print('Ничья')
@@ -102,7 +102,6 @@ def main():
         elif check() is False:
             print('Ничья')
             break
-
 
 
 print('''
