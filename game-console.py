@@ -46,11 +46,11 @@ def choice_fig():
         choice_fig()
 # ПРОВЕРКА ВЫИГРЫША
 def check():
-    for i in range(len(field)):  # если нет больше пустых клеток
-        if field[i] == empty:
-            return False
+    if len(list(filter(lambda x: x == empty, field))) == 0:  # если нет больше пустых клеток
+        return False
+    # WARN: возможна неопределённость (победитель определяется согласно контексту)
     for i in range(len(rules)):
-        if field[rules[i][0]] == field[rules[i][1]] == field[rules[i][2]] in (ch, c_ch):  # TODO: возможна неопределённость
+        if field[rules[i][0]] == field[rules[i][1]] == field[rules[i][2]] in (ch, c_ch):
             return True
 # ХОД ПОЛЬЗОВАТЕЛЯ
 def user_move():
