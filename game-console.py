@@ -1,3 +1,6 @@
+# coding: utf-8
+# author: become-iron (https://github.com/become-iron)
+
 # ПОЛЕ ИГРЫ
 # Одномерный список, хранящий состояние каждой ячейки
 # Порядок ячеек:
