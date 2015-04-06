@@ -1,17 +1,6 @@
 # coding: utf-8
 # author: become-iron (https://github.com/become-iron)
 
-# ПОЛЕ ИГРЫ
-# Одномерный список, хранящий состояние каждой ячейки
-# Порядок ячеек:
-#     [0][1][2]
-#     [3][4][5]
-#     [6][7][8]
-# Состояния ячеек:
-#     [ ] - пустая ячейка
-#     [o] - "нолик"
-#     [x] - "крестик"
-
 import random
 from copy import deepcopy
 
