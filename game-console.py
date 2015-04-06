@@ -46,6 +46,9 @@ def choice_fig():
         choice_fig()
 # ПРОВЕРКА ВЫИГРЫША
 def check():
+    for i in range(len(field)):
+        if field[i] == empty:
+            return False
     if len(list(filter(lambda x: x == empty, field))) == 0:  # если нет больше пустых клеток
         return False
     for i in range(len(rules)):
