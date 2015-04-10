@@ -97,7 +97,6 @@ def check():
 # ПАРТИЯ ИГРЫ
 def main():
     global field, line, line_temp
-    done = False  # выполнено ли условие для окончания партии
     field = [empty]*9  # создание пустого поля или его очистка
     random.shuffle(line)  # рандомно получаем очередность ходов: 0 - игрок, 1 - компьютер
     print('=' * 30)
@@ -111,26 +110,18 @@ def main():
         show()
     for i in range(len(field)):
         line_temp = deepcopy(line)
-        for i in range(2):
-            moving()
-            check_temp = check()
-            if check_temp == 0:
-                print('ВЫ ПОБЕДИЛИ')
-                done = True
-                break
-            elif check_temp == 1:
-                print('ПОБЕДИЛ КОМПЬЮТЕР')
-                done = True
-                break
-            elif check_temp == 2:
-                print('НИЧЬЯ')
-                done = True
-                break
-            if done:
-                break
-        if done:
+        moving()
+        check_temp = check()
+        if check_temp == 0:
+            print('ВЫ ПОБЕДИЛИ')
             break
-
+        elif check_temp == 1:
+            print('ПОБЕДИЛ КОМПЬЮТЕР')
+            break
+        elif check_temp == 2:
+            print('НИЧЬЯ')
+            break
+        line[0], line[1] = line[1], line[0]
 
 print('''
 КРАТКО ОБ ОСОБЕННОСТЯХ
@@ -145,7 +136,7 @@ print('''
 ''')
 
 while True:
-    if input('Сыграем? (д)').lower() in ('д','y'):
+    if input('Сыграем? (д)').lower() in ('д', 'y'):
         main()
     else:
         input('Выходим')
