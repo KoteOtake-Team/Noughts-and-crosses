@@ -99,8 +99,8 @@ def main():
     global field, line, line_temp
     done = False  # выполнено ли условие для окончания партии
     field = [empty]*9  # создание пустого поля или его очистка
-    print('=' * 30)
     random.shuffle(line)  # рандомно получаем очередность ходов: 0 - игрок, 1 - компьютер
+    print('=' * 30)
     if line[0] == 0:
         print('ВЫ ХОДИТЕ ПЕРВЫМ')
     else:
@@ -128,7 +128,7 @@ def main():
                 break
             if done:
                 break
-        if done:  # если определился результат игры
+        if done:
             break
 
 
