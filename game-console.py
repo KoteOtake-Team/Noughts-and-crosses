@@ -30,7 +30,7 @@ def choosing():
     global userFig, compFig
     if line[0] == 0:  # если первым ходит игрок
         choice_fig()
-    else:  # рандомный если первм ходит компьютер
+    else:  # рандомный если первым ходит компьютер
         x = [cross, nought]
         random.shuffle(x)
         userFig, compFig = x
@@ -80,13 +80,14 @@ def comp_move():
     field[m] = compFig
 # ПРОВЕРКА ВЫИГРЫША
 def check():
-    '''
-    Функция проверяет партию на наличие выигрышной ситуации
+    """
+    check() -> int
+    Проверка партии на наличие выигрышной ситуации
     Возвращает:
     0 - в случае победы игрока;
     1 - в случае победы компьютера;
     2 - в случае ничьи
-    '''
+    """
     for i in range(len(rules)):
         if field[rules[i][0]] == field[rules[i][1]] == field[rules[i][2]] in (userFig, compFig):
             return 0 if field[rules[i][0]] == userFig else 1
@@ -96,6 +97,7 @@ def check():
 # ПАРТИЯ ИГРЫ
 def main():
     global field, line, line_temp
+    done = False  # выполнено ли условие для окончания партии
     field = [empty]*9  # создание пустого поля или его очистка
     print('=' * 30)
     random.shuffle(line)  # рандомно получаем очередность ходов: 0 - игрок, 1 - компьютер
@@ -108,29 +110,25 @@ def main():
     if line[0] == 0:
         show()
     for i in range(len(field)):
-        # TODO: отрефакторить это безобразие (если это возможно вообще)
         line_temp = deepcopy(line)
-        moving()
-        check_temp = check()
-        if check_temp == 0:
-            print('ВЫ ПОБЕДИЛИ')
-            break
-        elif check_temp == 1:
-            print('ПОБЕДИЛ КОМПЬЮТЕР')
-            break
-        elif check_temp == 2:
-            print('НИЧЬЯ')
-            break
-        moving()
-        check_temp = check()
-        if check_temp == 0:
-            print('ВЫ ПОБЕДИЛИ')
-            break
-        elif check_temp == 1:
-            print('ПОБЕДИЛ КОМПЬЮТЕР')
-            break
-        elif check_temp == 2:
-            print('НИЧЬЯ')
+        for i in range(2):
+            moving()
+            check_temp = check()
+            if check_temp == 0:
+                print('ВЫ ПОБЕДИЛИ')
+                done = True
+                break
+            elif check_temp == 1:
+                print('ПОБЕДИЛ КОМПЬЮТЕР')
+                done = True
+                break
+            elif check_temp == 2:
+                print('НИЧЬЯ')
+                done = True
+                break
+            if done:
+                break
+        if done:  # если определился результат игры
             break
 
 
