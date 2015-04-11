@@ -2,7 +2,6 @@
 # author: become-iron (https://github.com/become-iron)
 
 import random
-from copy import deepcopy
 
 field = []  # поле игры
 # Фигуры
@@ -49,7 +48,7 @@ def choice_fig():
         choice_fig()
 # ХОД
 def moving():
-    if line_temp.pop(0) == 0:  # если первым должен ходить игрок
+    if line[0] == 0:  # если первым должен ходить игрок
         user_move()
         show()
     else:
@@ -96,7 +95,7 @@ def check():
 
 # ПАРТИЯ ИГРЫ
 def main():
-    global field, line, line_temp
+    global field, line
     field = [empty]*9  # создание пустого поля или его очистка
     random.shuffle(line)  # рандомно получаем очередность ходов: 0 - игрок, 1 - компьютер
     print('=' * 30)
@@ -109,7 +108,6 @@ def main():
     if line[0] == 0:
         show()
     for i in range(len(field)):
-        line_temp = deepcopy(line)
         moving()
         check_temp = check()
         if check_temp == 0:
