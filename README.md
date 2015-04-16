@@ -11,3 +11,5 @@ nc_gui.py - граф. интерфейс клиента
 nc_logic.py - логика клиента
 
 nc_net.py - сетевая составляющая клиента
+
+![](https://github.com/KoteOtake/Noughts-and-crosses/blob/dev/concept.jpg)
