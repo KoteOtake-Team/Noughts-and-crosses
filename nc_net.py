@@ -13,8 +13,12 @@ def transfer(**kwargs):
     """
     ПЕРЕДАЧА ДАННЫХ
     Функцию использует nc_logic для передачи ЛЮБЫХ данных на сервер
+    Возращает:
+    булево значение:
+    -True - в случае удачи
+    -False - в случае провала в передаче данных
     """
-    return None
+    return True
 
 s = socket.socket()
 s.connect((HOST, PORT))

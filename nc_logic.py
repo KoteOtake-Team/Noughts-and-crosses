@@ -37,8 +37,12 @@ def start_game(**kwargs):
     -очерёдность ходов
 
     """
-    nc_net.transfer()
-    return [empty] * 9
+    value = nc_net.transfer()
+    x = 0
+    if value == True:
+        return x
+    else:
+        raise FailedParty
 def moving(ceil):
     """
     ХОД ИГРОКА
