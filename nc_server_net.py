@@ -3,6 +3,7 @@
 """
 
 import sys, socket
+import nc_server_logic as nc_l
 
 HOST = ''
 PORT = 15000
