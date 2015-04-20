@@ -1,32 +1,37 @@
-"""
-Сетевая составляющая сервера
-"""
-
 import sys, socket
-import nc_server_logic as nc_l
+
 
 HOST = ''
-PORT = 15000
+PORT = 4444
 
-def handler(data):
-	return str.encode('Hero: %s' % data)
+class Server:
+
+	def __init__(self):
+		self.settings = HOST, PORT
+		self.socket = socket.socket()
+		self.socket.bind(self.settings)
+
+	def _handle_data(self, data):
+		return data + '- Hey! maaaan! thats cool'
+
+	def start(self):
+		self.socket.listen(2)
+		self.conn, self.addr = self.socket.accept()
+		print('connected->>', self.addr)
+		while True:
+			data = self.conn.recv(128)
+			if not data: break
+			print('from ',self.addr,'get:',data)
+			self.conn.send(self._handle_data(data))
+
+	def stop(self):
+		self.conn.close()
 
 
 def main():
-	s = socket.socket()
-	s.bind((HOST, PORT))
-	s.listen(2)
-	
-	conn, addr = s.accept()
-	print('connected:', addr)
-
-	while True:
-		data = conn.recv(1024)
-
-		print(data.decode())
-		if not data: break
-		conn.send( handler(data.decode()) )
-	conn.close()
+	server = Server()
+	server.start()
+	server.stop()
 
 
 if __name__ == '__main__':

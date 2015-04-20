@@ -1,11 +1,24 @@
-"""
-Сетевая составляющая клиента
-"""
-
 import sys, socket
 
 HOST = 'localhost'
-PORT = 15000
+PORT = 4444
+
+
+class Client:
+
+    def __init__(self):
+        self.settings = HOST, PORT
+        self.socket = socket.socket()
+        self.socket.connect(self.settings)
+
+    def send(self, data):
+        self.socket.send(data)
+
+    def get_response(self):
+        return self.socket.recv(128)
+
+    def stop(self):
+        self.socket.close()
 
 
 
@@ -20,15 +33,15 @@ def transfer(**kwargs):
     """
     return True
 
-s = socket.socket()
-s.connect((HOST, PORT))
 
-while True:
-	data = input('type:')
-	if not data: break
-	s.send(str.encode(data))
+def main():
+    client = Client()
+    while True:
+        data = input('type->>')
+        if not data: break
+        client.send(data)
+        print(client.get_response())
 
-	result = s.recv(1024)
-	print(result.decode())
 
-s.close()
+if __name__ == '__main__':
+    main()
