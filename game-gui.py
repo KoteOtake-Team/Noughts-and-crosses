@@ -6,6 +6,7 @@ import sys
 import time
 from PyQt4 import QtGui
 from PyQt4 import QtCore
+import sip
 
 field = []  # поле игры
 # Фигуры
@@ -847,6 +848,7 @@ class MainWindow(QtGui.QMainWindow):
             game_result = 2
 
 if __name__ == '__main__':
+    sip.setdestroyonexit(False)
     app = QtGui.QApplication(sys.argv)
     main = MainWindow()
     main.show()
