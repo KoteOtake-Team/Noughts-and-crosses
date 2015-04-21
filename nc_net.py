@@ -22,16 +22,13 @@ class Client:
 
 
 
-def transfer(**kwargs):
+def transfer(data):
     """
     ПЕРЕДАЧА ДАННЫХ
-    Функцию использует nc_logic для передачи ЛЮБЫХ данных на сервер
-    Возращает:
-    булево значение:
-    -True - в случае удачи
-    -False - в случае провала в передаче данных
+    Функция отправляет данные на сервер, где они обрабатываются. Затем возвращается ответ
+    nc_net.transfer() -> nc_server_net -> nc_server_logic.recieve() -> nc_server_net -> nc_net.transfer()
     """
-    return True
+    pass
 
 
 def main():
