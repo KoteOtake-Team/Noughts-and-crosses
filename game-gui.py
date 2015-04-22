@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# author: become-iron (https://github.com/become-iron)
 
 import random
 import sys
@@ -31,7 +30,7 @@ rules = ((0, 1, 2), (3, 4, 5), (6, 7, 8),  # по горизонтали
 class MainWindow(QtGui.QMainWindow):
     def __init__(self):
         QtGui.QMainWindow.__init__(self)
-        global main_box, file, exitGame
+        global main_box, file, exitGame, main_frame
 
         # создание фона окна
         main_frame = QtGui.QWidget()
@@ -397,40 +396,33 @@ class MainWindow(QtGui.QMainWindow):
 
     # ВЫВОД ПОЛЯ НА ЭКРАН
     def show_field(self):
-        global frame_for_field, grid_for_field, result, finish_row
+        global frame_for_field, grid_for_field, result, finish_row, main_frame, field_button_group
         print(field)
         j = 0
         # индексы позиций в сетке поля
         pos = [(0, 0), (0, 1), (0, 2),
                (1, 0), (1, 1), (1, 2),
                (2, 0), (2, 1), (2, 2)]
+
+        field_button_group = QtGui.QButtonGroup(main_frame)
         # Создание каждой кнопки и связь с функцией
         one = QtGui.QPushButton(field[0], self)
-        one.clicked.connect(self.user_move_one)
 
         two = QtGui.QPushButton(field[1], self)
-        two.clicked.connect(self.user_move_two)
 
         three = QtGui.QPushButton(field[2], self)
-        three.clicked.connect(self.user_move_three)
 
         four = QtGui.QPushButton(field[3], self)
-        four.clicked.connect(self.user_move_four)
 
         five = QtGui.QPushButton(field[4], self)
-        five.clicked.connect(self.user_move_five)
 
         six = QtGui.QPushButton(field[5], self)
-        six.clicked.connect(self.user_move_six)
 
         seven = QtGui.QPushButton(field[6], self)
-        seven.clicked.connect(self.user_move_seven)
 
         eight = QtGui.QPushButton(field[7], self)
-        eight.clicked.connect(self.user_move_eight)
 
         nine = QtGui.QPushButton(field[8], self)
-        nine.clicked.connect(self.user_move_nine)
 
         # Список с кнопками
         nums = [one, two, three, four, five, six, seven, eight, nine]
@@ -450,11 +442,15 @@ class MainWindow(QtGui.QMainWindow):
                     pass
             else:
                 nums[k].setStyleSheet('color: black; font-size: 30pt;')
-
+            field_button_group.addButton(nums[k])
+            field_button_group.setId(nums[k], k)
             # добавление кнопки в сетку
             grid_for_field.addWidget(nums[k], pos[j][0], pos[j][1])
             j += 1
         print('rezultat', result)
+
+        field_button_group.buttonClicked[QtGui.QAbstractButton].connect(self.user_move)
+
         # рисует сетку
         frame_for_field.setLayout(grid_for_field)
 
@@ -587,8 +583,24 @@ class MainWindow(QtGui.QMainWindow):
         self.moving()
 
     # Ход игрока
-    def user_move(self):    # эта функция пока что ничего не делает
-        pass
+    def user_move(self, button):
+        global field_button_group, userFig, turn, index_string_to_log, text_log
+        print('нажата кнопка', field_button_group.id(button))
+        cell = field_button_group.id(button)
+        if turn is False:
+            if field[cell] != empty:
+                turn = False
+                self.statusBar().showMessage('Ячейка занята')
+            else:
+                field[cell] = userFig
+                turn = not turn
+                index_string_to_log = str(int(cell)+1)
+                text_log.append(time.strftime('%H:%M:%S') + ' Игрок - ' + index_string_to_log)
+                self.statusBar().clearMessage()
+            self.show_field()
+            self.moving()
+        else:
+            self.status_message_show()
 
     # Сообщение в статусе по окончании игры
     def status_message_show(self):
@@ -600,169 +612,6 @@ class MainWindow(QtGui.QMainWindow):
             self.statusBar().showMessage('Игра окончена: компьютер выиграл')
         elif game_result == 2:
             self.statusBar().showMessage('Игра окончена: ничья')
-
-    # Дейстивя при нажатии каждой кнопки
-    def user_move_one(self):
-        global userFig, turn, index_string_to_log, text_log
-        print('hod', turn)
-        if turn is False:
-            if field[0] != empty:
-                turn = False
-                self.statusBar().showMessage('Ячейка занята')
-            else:
-                field[0] = userFig
-                turn = not turn
-                index_string_to_log = "1"
-                text_log.append(time.strftime('%H:%M:%S') + ' Игрок - ' + index_string_to_log)
-                self.statusBar().clearMessage()
-            self.show_field()
-            self.moving()
-        else:
-            self.status_message_show()
-
-    def user_move_two(self):
-        global userFig, turn, index_string_to_log, text_log
-        print('hod', turn)
-        if turn is False:
-            if field[1] != empty:
-                turn = False
-                self.statusBar().showMessage('Ячейка занята')
-            else:
-                field[1] = userFig
-                turn = not turn
-                index_string_to_log = "2"
-                text_log.append(time.strftime('%H:%M:%S') + ' Игрок - ' + index_string_to_log)
-                self.statusBar().clearMessage()
-            self.show_field()
-            self.moving()
-        else:
-            self.status_message_show()
-
-    def user_move_three(self):
-        global userFig, turn, index_string_to_log, text_log
-        print('hod', turn)
-        if turn is False:
-            if field[2] != empty:
-                turn = False
-                self.statusBar().showMessage('Ячейка занята')
-            else:
-                field[2] = userFig
-                turn = not turn
-                index_string_to_log = "3"
-                text_log.append(time.strftime('%H:%M:%S') + ' Игрок - ' + index_string_to_log)
-                self.statusBar().clearMessage()
-            self.show_field()
-            self.moving()
-        else:
-            self.status_message_show()
-
-    def user_move_four(self):
-        global userFig, turn, index_string_to_log, text_log
-        print('hod', turn)
-        if turn is False:
-            if field[3] != empty:
-                turn = False
-                self.statusBar().showMessage('Ячейка занята')
-            else:
-                field[3] = userFig
-                turn = not turn
-                index_string_to_log = "4"
-                text_log.append(time.strftime('%H:%M:%S') + ' Игрок - ' + index_string_to_log)
-                self.statusBar().clearMessage()
-            self.show_field()
-            self.moving()
-        else:
-            self.status_message_show()
-
-    def user_move_five(self):
-        global userFig, turn, index_string_to_log, text_log
-        print('hod', turn)
-        if turn is False:
-            if field[4] != empty:
-                turn = False
-                self.statusBar().showMessage('Ячейка занята')
-            else:
-                field[4] = userFig
-                turn = not turn
-                index_string_to_log = "5"
-                text_log.append(time.strftime('%H:%M:%S') + ' Игрок - ' + index_string_to_log)
-                self.statusBar().clearMessage()
-            self.show_field()
-            self.moving()
-        else:
-            self.status_message_show()
-
-    def user_move_six(self):
-        global userFig, turn, index_string_to_log, text_log
-        print('hod', turn)
-        if turn is False:
-            if field[5] != empty:
-                turn = False
-                self.statusBar().showMessage('Ячейка занята')
-            else:
-                field[5] = userFig
-                turn = not turn
-                index_string_to_log = "6"
-                text_log.append(time.strftime('%H:%M:%S') + ' Игрок - ' + index_string_to_log)
-                self.statusBar().clearMessage()
-            self.show_field()
-            self.moving()
-        else:
-            self.status_message_show()
-
-    def user_move_seven(self):
-        global userFig, turn, index_string_to_log, text_log
-        print('hod', turn)
-        if turn is False:
-            if field[6] != empty:
-                turn = False
-                self.statusBar().showMessage('Ячейка занята')
-            else:
-                field[6] = userFig
-                turn = not turn
-                index_string_to_log = "7"
-                text_log.append(time.strftime('%H:%M:%S') + ' Игрок - ' + index_string_to_log)
-                self.statusBar().clearMessage()
-            self.show_field()
-            self.moving()
-        else:
-            self.status_message_show()
-
-    def user_move_eight(self):
-        global userFig, turn, index_string_to_log
-        print('hod', turn)
-        if turn is False:
-            if field[7] != empty:
-                turn = False
-                self.statusBar().showMessage('Ячейка занята')
-            else:
-                field[7] = userFig
-                turn = not turn
-                index_string_to_log = "8"
-                text_log.append(time.strftime('%H:%M:%S') + ' Игрок - ' + index_string_to_log)
-                self.statusBar().clearMessage()
-            self.show_field()
-            self.moving()
-        else:
-            self.status_message_show()
-
-    def user_move_nine(self):
-        global userFig, turn, index_string_to_log, text_log
-        print('hod', turn)
-        if turn is False:
-            if field[8] != empty:
-                turn = False
-                self.statusBar().showMessage('Ячейка занята')
-            else:
-                field[8] = userFig
-                turn = not turn
-                index_string_to_log = "9"
-                text_log.append(time.strftime('%H:%M:%S') + ' Игрок - ' + index_string_to_log)
-                self.statusBar().clearMessage()
-            self.show_field()
-            self.moving()
-        else:
-            self.status_message_show()
 
     # ХОД
     def moving(self):
@@ -792,7 +641,6 @@ class MainWindow(QtGui.QMainWindow):
         # если матч не окончен, игра продолжается
         if result is False:
             if turn is False:  # если первым должен ходить игрок
-                self.user_move()
                 h = False
             else:
                 print('h', h)
