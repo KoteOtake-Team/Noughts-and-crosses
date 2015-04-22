@@ -1,15 +1,17 @@
 # coding: utf-8
 """
-Логическая составляющя клиента
+Логическая составляющая клиента
 """
 # НЕРАБОЧАЯ ВЕРСИЯ!
 
 import nc_net
+host = 0  # данные, необходимые для идентификации партии на сервере
 
-
-class WrongData(Exception):
+class WrongDataError(Exception):
     """
     Исключение, возникающее при передаче функциям неверных типов данных
+    Необходимо перехватывать в nc_gui, либо можно заменить на одно возвращаемых
+    фунциями значений
     """
     pass
 
@@ -20,40 +22,30 @@ def start_game(host=-1):
     Принимает:
         host (int, необязательный, равен -1 по умолчанию) - идентификатор игрока, с которым хотелось бы сыграть
     Возвращает:
-    ###Возможно, лучще возвращаемые значения заменить на однозначно интерпретируемые коды###
-        tuple:
-            1) boolean - успешно ли создание партии
-                True - успешно
-                False - провал
-            2) boolean (только если создание партии успешно)- очередность ходов
-                True - текущий игрок ходит первым
-                False - текущий игрок ходит вторым
-            3) int (только если текущий игрок ходит вторым) - фигура противника
-                0 - крестики
-                1 - нолики
-            В случае отсутсвия возращаемого значения элемент заполняется None
-            Примеры:
-                (True, False, 0),
-                (True, True, None),
-                (False, None, None)
-
-    Если первым ходит текущий игрок, должна быть вызвана функция выбора фигуры choosing()
+        int:
+            0 - партия не создана, нет соединения/превышено время ожидания
+            1 - партия не создана, неизвестная ошибка
+            2 - партия создана, текущий игрок ходит первым, нужно выбрать фигуру
+            3 - партия создана, текущий игрок ходит вторым, другой игрок выбрал крестики
+            4 - партия создана, текущий игрок ходит вторым, другой игрок выбрал нолики
     """
     if type(host) != int:
-        raise WrongData
+        raise WrongDataError
 
-    value = nc_net.transfer() if host == -1 else nc_net.transfer(host=host)  # обмен данными с сервером
+    value = nc_net.make_party(None) if host == -1 else nc_net.make_party(None)  # обмен данными с сервером
 
     # несогласованный пример. лишь для наглядности
-    # будут вложенные условия
-    if value == 1:
-        return False, None, None
+    if value == 0:
+        return 0
+    elif value == 1:
+        return 1
     elif value == 2:
-        return True, True, None
+        return 2
     elif value == 3:
-        return True, False, 0
+        return 3
     elif value == 4:
-        return True, False, 1
+        return 4
+
 
 def choosing(figure):
     """
@@ -67,13 +59,16 @@ def choosing(figure):
             True - успешен
             False - нет
     """
-    if figure not in (0,1):
-        raise WrongData
-    value = nc_net.transfer()  # обмен данными с сервером
+    if figure not in (0, 1):
+        raise WrongDataError
+
+    value = nc_net.transfer(())  # обмен данными с сервером
     if value is True:
         return True
     elif value is False:
         return False
+
+
 def moving(ceil):
     """
     ХОД ИГРОКА
@@ -87,8 +82,8 @@ def moving(ceil):
             False - нет
     """
     if ceil not in (0, 1, 2, 3, 4, 5, 6, 7, 8):
-        raise WrongData
-    value = nc_net.transfer()
+        raise WrongDataError
+    value = nc_net.transfer(None)
     if value is True:
         return True
     elif value is False:
