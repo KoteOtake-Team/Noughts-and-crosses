@@ -10,8 +10,7 @@ empty = None  # пустая ячейка
 cross = 0  # крестики
 nought = 1  # нолики
 
-firstPlayer = ''  # фигура первого игрока
-secondPlayer = ''  # фигура второго игрока
+player = []  # фигуры первого и второго игроков: [cross, nought] или [nought, cross]
 line = [0, 1]  # TEMP: очередность ходов
 
 # правила для определения выигрыша
@@ -35,13 +34,15 @@ def recieve(data):
     принимает от неё ответ, возвращает его клиенту
     Принимает:
         tuple:
-            I элемент:
+            tuple:
                 int - тип запроса (к какой функции он адресован)
                     0 - старт игры
                     1 - выбор фигуры
                     2 - ход
-            II элемент
-                int - данные
+                int - данные для обрабатывающей функции
+            string/int:
+                информация об игроке (составляется в nc_server)
+        Пример: ((1, 5),  2344)
     Возвращает:
 
     """
@@ -51,12 +52,13 @@ def recieve(data):
     elif data[0] == 1:
         choosing(data[1])
     elif data[0] == 2:
-        moving(data[1])
+        moving(data[1], player[0])
 
 
 def start():
     """
     СТАРТ ИГРЫ
+
     """
     global field
     shuffle(line)
@@ -71,9 +73,10 @@ def choosing(figure):
     pass
 
 
-def moving(move):
+def moving(move, player):
     """
     ХОД
+
     """
     pass
 
@@ -81,16 +84,21 @@ def moving(move):
 def check():
     """
     ПРОВЕРКА ВЫИГРЫША
-    check() -> int
     Проверка партии на наличие выигрышной ситуации
+    Принимает:
+        ничего
     Возвращает:
-    0 - в случае победы игрока;
-    1 - в случае победы компьютера;
-    2 - в случае ничьи
+        int:
+            0 - в случае победы первого игрока;
+            1 - в случае победы второго игрока;
+            2 - в случае ничьи
+            3 - выигрышная ситуация ещё не возникла
     """
-    # for i in range(len(rules)):
-    #     if field[rules[i][0]] == field[rules[i][1]] == field[rules[i][2]] in (firPlayerFig, secPlayerFig):
-    #         return 0 if field[rules[i][0]] == firPlayerFig else 1
-    # if len(list(filter(lambda x: x == empty, field))) == 0:  # если нет больше пустых клеток
-    #     return 2
-    pass
+    #TODO: требуется проверка работоспособности кода
+    for rule in rules:
+        # если выполняется какое-либо из правил
+        if field[rule[0]] == field[rule[1]] == field[rule[2]] in (cross, nought):
+            return 0 if field[rule[0]] == player[0] else 1
+    if len(list(filter(lambda x: x == empty, field))) == 0:  # если нет больше пустых клеток
+        return 2
+    return 3
