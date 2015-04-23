@@ -154,23 +154,18 @@ class MainWindow(QtGui.QMainWindow):
             userFig, compFig = x
             self.game_with_comp()
 
-    def nought_choose_button_clicked(self, enabled):
-        global userFig, compFig
-        if enabled:
-            userFig = nought
-            compFig = cross
-            # print('da')
-
-    def cross_choose_button_clicked(self, enabled):
-        global userFig, compFig
-        if enabled:
-            userFig = cross
-            compFig = nought
-            # print('da')
+    def choose_button_clicked(self, button):
+        global userFig, compFig, choosing_button_group
+        userFig = choosing_button_group.id(button)
+        with open('nc_fig.txt', 'w') as b:
+            b.write(str(choosing_button_group.id(button)))
+        print('da')
 
     # Выбор фигуры
     def choosing(self):
-        global frame_for_field, main_box, frame_for_score, frame_for_log
+        global frame_for_field, main_box, frame_for_score, frame_for_log, choosing_button_group
+
+        choosing_button_group = QtGui.QButtonGroup(main_frame)
 
         # удаление рамки с приветствием/полем
         frame_for_field.deleteLater()
@@ -186,18 +181,23 @@ class MainWindow(QtGui.QMainWindow):
 
         # создание приветствия
         label = QtGui.QLabel(u"""<center>Привет!</center>""", frame_for_field)
-        # создание кнопки начала игры
+        # создание кнопок выбора фигуры
         cross_choose_button = QtGui.QRadioButton(u"Крестики", frame_for_field)
         nought_choose_button = QtGui.QRadioButton(u"Нолики", frame_for_field)
+        # добавление кнопок выбора фигуры
+        choosing_button_group.addButton(cross_choose_button)
+        choosing_button_group.addButton(nought_choose_button)
+        # присвоение идентификаторов
+        choosing_button_group.setId(cross_choose_button, 0)
+        choosing_button_group.setId(nought_choose_button, 1)
 
         # если игрок ничего не нажимал, но крестики всё ещё выделены
         cross_choose_button.setChecked(True)
         if cross_choose_button.isChecked() is True:
-            self.cross_choose_button_clicked(True)
+            self.choose_button_clicked(cross_choose_button)
 
         # сслыки на функции
-        cross_choose_button.toggled.connect(self.cross_choose_button_clicked)
-        nought_choose_button.toggled.connect(self.nought_choose_button_clicked)
+        choosing_button_group.buttonClicked[QtGui.QAbstractButton].connect(self.choose_button_clicked)
 
         # создание кнопки
         game_with_comp_button = QtGui.QPushButton(u"Играть", frame_for_field)
@@ -330,6 +330,13 @@ class MainWindow(QtGui.QMainWindow):
             compWinCount, frame_for_score, container_for_score, score, userFig, compFig, figure, index_string_to_log, \
             game_result, finish_row, NewGame, file, exitGame
 
+        if userFig == 0:
+            userFig = cross
+            compFig = nought
+        elif userFig == 1:
+            userFig = nought
+            compFig = cross
+
         # удаление кнопки новой игры из панели инструментов
         try:
             file.removeAction(NewGame)
@@ -443,6 +450,7 @@ class MainWindow(QtGui.QMainWindow):
             else:
                 nums[k].setStyleSheet('color: black; font-size: 30pt;')
             field_button_group.addButton(nums[k])
+            # присвоение идентификатора
             field_button_group.setId(nums[k], k)
             # добавление кнопки в сетку
             grid_for_field.addWidget(nums[k], pos[j][0], pos[j][1])
