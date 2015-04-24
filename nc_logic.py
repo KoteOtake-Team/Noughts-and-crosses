@@ -16,6 +16,12 @@ class WrongDataError(Exception):
     pass
 
 
+
+
+
+
+
+
 def start_game(host=-1):
     """
     СОЗДАТЬ ПАРТИЮ
