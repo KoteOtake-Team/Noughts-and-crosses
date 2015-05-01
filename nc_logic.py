@@ -25,17 +25,15 @@ class WrongAction(Exception):
 
 
 class Game():
-    empty = None  # пустая ячейка
-    cross = 0  # крестики
-    nought = 1  # нолики
-    # правила для определения выигрыша
-    rules = ((0, 1, 2), (3, 4, 5), (6, 7, 8),  # по горизонтали
-             (0, 3, 6), (1, 4, 7), (2, 5, 8),  # по вертикали
-             (0, 4, 8), (2, 4, 6))  # по диагонали
-
     def __init__(self):
-        global empty
-        self.field = [empty] * 9  # игровое поле
+        self.empty = None  # пустая ячейка
+        self.cross = 0  # крестики
+        self.nought = 1  # нолики
+        # правила для определения выигрыша
+        self.rules = ((0, 1, 2), (3, 4, 5), (6, 7, 8),  # по горизонтали
+                      (0, 3, 6), (1, 4, 7), (2, 5, 8),  # по вертикали
+                      (0, 4, 8), (2, 4, 6))  # по диагонали
+        self.field = [self.empty] * 9  # игровое поле
         self.figure = -1  # фигура текущего игрока: 0 - крестик, 1 - нолик
         self.opp_figure = -1  # фигура противника
         self.sequence = -1  # очередность ходов: 0 - тек. игрок ходит первым, 1 - вторым
@@ -68,7 +66,7 @@ class Game():
         #       4 - партия не создана, не получилось соединиться с выбранным игроком
         #       5 - партия не создана, неизвестная ошибка
         #   идентификатор соперника (int) или (None) в случае неудачи
-        value = nc_net.make_party(opponent) # встать в очередь на сервере
+        value = nc_net.make_party(opponent)  # встать в очередь на сервере
 
         if value[0] in (0, 1):
             self.sequence = value[0]
@@ -91,8 +89,6 @@ class Game():
                 True - успешен
                 False - нет
         """
-        global cross, nought
-
         if figure not in (0, 1):
             raise WrongDataError
         if self.figure != -1:  # если фигура уже была определена ранее
@@ -109,7 +105,7 @@ class Game():
 
         if value is True:
             self.figure = figure
-            self.opp_figure = nought if figure == cross else cross
+            self.opp_figure = self.nought if figure == self.cross else self.cross
             return True
         elif value is False:
             return False
