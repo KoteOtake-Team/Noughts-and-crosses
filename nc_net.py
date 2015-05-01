@@ -22,28 +22,23 @@ class Client:
 
 
 
-def make_party(data):
+def make_party(host):
     """
     СОЗДАНИЕ ПАРТИИ
     """
     pass
 
-def kill_party(data):
+def kill_party():
     """
     ЗАВЕРШИТЬ ПАРТИЮ
     """
     pass
 
-def transfer(data):
+def transfer(operation=-1, data=-1):
     """
     ПЕРЕДАЧА ДАННЫХ
-    Функция отправляет данные на сервер, где они обрабатываются. Затем возвращается ответ
-    nc_net.transfer() -> nc_server_net -> nc_server_logic.recieve() -> nc_server_net -> nc_net.transfer()
     """
-
-    # временный код для локального тестирования
-    import nc_server_logic
-    nc_server_logic.recieve(data)
+    pass
 
 
 def main():
