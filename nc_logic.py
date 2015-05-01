@@ -110,7 +110,7 @@ class Game():
         elif value is False:
             return False
 
-    def moving(self, cell):
+    def mooving(self, cell):
         """
         ХОД ИГРОКА
         Принимает:
