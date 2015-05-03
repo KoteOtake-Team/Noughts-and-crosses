@@ -1,38 +1,26 @@
-import sys, socket
+"""
+FLASK(pip install Flask)
+"""
+import os
+from flask import Flask, request,jsonify
+
+app = Flask(__name__)
+app.secret_key = os.urandom(24)
 
 
-HOST = ''
-PORT = 4444
-
-class Server:
-
-	def __init__(self):
-		self.settings = HOST, PORT
-		self.socket = socket.socket()
-		self.socket.bind(self.settings)
-
-	def _handle_data(self, data):
-		return data + '- Hey! maaaan! thats cool'
-
-	def start(self):
-		self.socket.listen(2)
-		self.conn, self.addr = self.socket.accept()
-		print('connected->>', self.addr)
-		while True:
-			data = self.conn.recv(128)
-			if not data: break
-			print('from ',self.addr,'get:',data)
-			self.conn.send(self._handle_data(data))
-
-	def stop(self):
-		self.conn.close()
+@app.route('/')
+def index():
+    return 'Hey, you are connected'
 
 
-def main():
-	server = Server()
-	server.start()
-	server.stop()
-
+@app.route('/move', methods=['POST'])
+def move():
+    json = request.json
+    print(json)
+    return jsonify(json)
 
 if __name__ == '__main__':
-	main()
+    app.run(
+        host='0.0.0.0',
+        debug=True
+        )
