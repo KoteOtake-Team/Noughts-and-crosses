@@ -1,26 +1,51 @@
-"""
-FLASK(pip install Flask)
-"""
-import os
-from flask import Flask, request,jsonify
+import os, random, time
+from flask import Flask, request, jsonify
+
 
 app = Flask(__name__)
-app.secret_key = os.urandom(24)
+user_stack = []
 
 
-@app.route('/')
+@app.route('/', methods = ['POST'])
 def index():
-    return 'Hey, you are connected'
+    if len(user_stack) > 9:
+        return jsonify({'message': 'server is full'})
+
+    global user_stack
+    headers = request.headers
+    req = request.get_json()
+
+    while True:
+        api_key = random.randint(1,10)
+        if api_key not in user_stack:
+            user_stack.append(api_key)
+            break
+
+    response ={'key': str(api_key)}
+
+    print('request to server:', req)
+    print("server's response:", response)
+    return jsonify(response)
 
 
-@app.route('/move', methods=['POST'])
-def move():
-    json = request.json
-    print(json)
-    return jsonify(json)
+@app.route('/search_enemy', methods = ['POST'])
+def search_for_enemy():
+    req = request.get_json()
+    if 0 < int(req['key']) < 11:
+        if len(user_stack) > 1:
+            while True:
+                enemy = random.choice(user_stack)
+                if req['key'] != enemy:
+                    response = {'enemy_key': enemy}
+                    return jsonify(response)
+        else: return None
+
+
+
 
 if __name__ == '__main__':
     app.run(
-        host='0.0.0.0',
+        host=os.getenv('IP', '0.0.0.0'),
+        port=int(os.getenv('PORT', 8080)),
         debug=True
-        )
+    )
