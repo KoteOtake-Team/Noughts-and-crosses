@@ -40,7 +40,20 @@ def search_for_enemy():
                     return jsonify(response)
         else: return None
 
+# для пробной игры
+buffer = None
 
+@app.route('/req', methods = ['POST'])
+def get_req():
+    global buffer
+    buffer = request.get_json()
+    print(buffer)
+    return jsonify({'message': 'success'})
+    
+@app.route('/res', methods=['POST'])
+def send_res():
+    global buffer
+    return jsonify(buffer)
 
 
 if __name__ == '__main__':
