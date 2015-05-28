@@ -1,60 +1,65 @@
-import os, random, time
+import os
+import random
+from time import sleep
 from flask import Flask, request, jsonify
 
 
+
 app = Flask(__name__)
-user_stack = []
+app.clients = list()
+app.rooms = list()
 
 
-@app.route('/', methods = ['POST'])
-def index():
-    if len(user_stack) > 9:
-        return jsonify({'message': 'server is full'})
-
-    global user_stack
-    headers = request.headers
-    req = request.get_json()
-
-    while True:
-        api_key = random.randint(1,10)
-        if api_key not in user_stack:
-            user_stack.append(api_key)
-            break
-
-    response ={'key': str(api_key)}
-
-    print('request to server:', req)
-    print("server's response:", response)
-    return jsonify(response)
-
-
-@app.route('/search_enemy', methods = ['POST'])
-def search_for_enemy():
-    req = request.get_json()
-    if 0 < int(req['key']) < 11:
-        if len(user_stack) > 1:
-            while True:
-                enemy = random.choice(user_stack)
-                if req['key'] != enemy:
-                    response = {'enemy_key': enemy}
-                    return jsonify(response)
-        else: return None
-
-# для пробной игры
-buffer = None
-
-@app.route('/req', methods = ['POST'])
-def get_req():
-    global buffer
-    buffer = request.get_json()
-    print(buffer)
-    return jsonify({'message': 'success'})
+@app.route('/connect', methods=['POST'])
+def connection():
+    print(app.clients)
+    id = len(app.clients) + 1
+    app.clients.append(id)
     
-@app.route('/res', methods=['POST'])
-def send_res():
-    global buffer
-    return jsonify(buffer)
+    print(request.get_json())
+    
+    return jsonify( {'id': id} )
+    
 
+@app.route('/enemy', methods=['POST'])
+def enemy():
+    if len(app.clients) == 0:
+       return False
+    else:
+        client_id = request.get_json()['id']
+        qty_clients = range(len(app.rooms))
+        
+        if len(app.rooms) > 0:
+            for i in qty_clients:        
+                if client_id in app.rooms[i][0]:
+                    return jsonify( {'room_id': i, 'turn': 0} )
+                elif client_id in app.rooms[i][1]:
+                    return jsonify( {'room_id': i, 'turn': 1} )
+        else:
+            for i in qty_clients:
+                if client_id != app.clients[i]:
+                    app.rooms.append(client_id, app.clients[i], None)
+                    return jsonify( {'room_id': i, 'turn': 0} )
+                    
+
+
+@app.route('/req/<room>', methods=['POST'])
+def req():
+   data = request.get_json()['data']
+   room = request.args['room']
+   
+   app.rooms[room][2] = data
+   
+   return True
+   
+
+@app.route('/res/<room>', methods=['POST'])
+def resp():
+    room = request.args['room']
+    result = app.rooms[room][2]
+    
+    return result
+    
 
 if __name__ == '__main__':
     app.run(
